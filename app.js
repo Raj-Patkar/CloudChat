@@ -61,10 +61,14 @@ function sendMessage() {
   const file = fileInput.files[0];
   const user = auth.currentUser;
 
+  console.log('Clicked Send. File:', file, 'Message:', message);
+
   if (user && (message || file)) {
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
+
+      console.log('Uploading file to Cloud Function...');
 
       fetch('https://us-central1-deep-wares-462607-b4.cloudfunctions.net/uploadImage', {
         method: 'POST',
@@ -72,6 +76,7 @@ function sendMessage() {
       })
       .then(res => res.json())
       .then(data => {
+        console.log('Function returned:', data);
         db.ref(`rooms/${currentRoom}/messages`).push({
           sender: user.email,
           imageUrl: data.url,
@@ -79,7 +84,9 @@ function sendMessage() {
           timestamp: Date.now()
         });
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error('Upload error:', err);
+      });
     } else {
       db.ref(`rooms/${currentRoom}/messages`).push({
         sender: user.email,
@@ -88,11 +95,13 @@ function sendMessage() {
       });
     }
 
+    // Reset everything
     messageInput.value = '';
     fileInput.value = '';
     toggleSendButton();
   }
 }
+
 
 
 
@@ -114,13 +123,15 @@ function listenForMessages() {
     const msgEl = document.createElement('div');
     msgEl.classList.add('message');
 
-    msgEl.innerHTML = `
-      <div class="bubble">
-        <span class="msg-sender">${msg.sender === currentUser.email ? 'You' : msg.sender}</span>
-        <div class="msg-text">${msg.text}</div>
-        <span class="msg-time">${time}</span>
-      </div>
-    `;
+msgEl.innerHTML = `
+  <div class="bubble">
+    <span class="msg-sender">${msg.sender === currentUser.email ? 'You' : msg.sender}</span>
+    ${msg.text ? `<div class="msg-text">${msg.text}</div>` : ''}
+    ${msg.imageUrl ? `<img src="${msg.imageUrl}" class="msg-image">` : ''}
+    <span class="msg-time">${time}</span>
+  </div>
+`;
+
 
     if (currentUser && msg.sender === currentUser.email) {
       msgEl.classList.add('my-message');
@@ -152,9 +163,17 @@ auth.onAuthStateChanged((user) => {
 });
 
 function toggleSendButton() {
-  const input = document.getElementById('message-input').value.trim();
-  document.getElementById('send-btn').disabled = input === "";
+  const messageInput = document.getElementById('message-input');
+  const fileInput = document.getElementById('image-input');
+  const sendBtn = document.getElementById('send-btn');
+
+  if (messageInput.value.trim() || fileInput.files.length > 0) {
+    sendBtn.disabled = false;
+  } else {
+    sendBtn.disabled = true;
+  }
 }
+
 
 
 

@@ -6,6 +6,7 @@ const bucket = storage.bucket('cloudchat-uploads'); // change to your bucket nam
 const Busboy = require('busboy'); // For parsing form-data
 
 functions.http('uploadImage', (req, res) => {
+   req.rawBody = req.rawBody || req.body;
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
   }

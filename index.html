@@ -32,8 +32,9 @@
 <button onclick="createRoom()">Create Room</button>
 
       <div id="messages"></div>
+      <input type="file" id="image-input" accept="image/*" onchange="toggleSendButton()">      
       <input id="message-input" placeholder="Type a message..."  oninput="toggleSendButton()" />
-      <input type="file" id="image-input" accept="image/*">
+
       <button  id="send-btn" onclick="sendMessage()" disabled>Send</button>
       <button onclick="logout()">Logout</button>
     </div>
