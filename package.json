@@ -1,0 +1,8 @@
+{
+  "name": "uploadImageFunction",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0",
+    "@google-cloud/storage": "^7.0.0",
+    "busboy": "^1.6.0"
+  }
+}

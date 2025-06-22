@@ -38,7 +38,7 @@ function logout() {
   });
 }
 
-function sendMessage() {
+/*function sendMessage() {
   const messageInput = document.getElementById('message-input');
   const message = messageInput.value.trim();
   const user = auth.currentUser;
@@ -53,6 +53,47 @@ function sendMessage() {
     toggleSendButton();
   }
 }
+*/
+function sendMessage() {
+  const messageInput = document.getElementById('message-input');
+  const fileInput = document.getElementById('image-input');
+  const message = messageInput.value.trim();
+  const file = fileInput.files[0];
+  const user = auth.currentUser;
+
+  if (user && (message || file)) {
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      fetch('https://us-central1-deep-wares-462607-b4.cloudfunctions.net/uploadImage', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        db.ref(`rooms/${currentRoom}/messages`).push({
+          sender: user.email,
+          imageUrl: data.url,
+          text: message || '',
+          timestamp: Date.now()
+        });
+      })
+      .catch(err => console.error(err));
+    } else {
+      db.ref(`rooms/${currentRoom}/messages`).push({
+        sender: user.email,
+        text: message,
+        timestamp: Date.now()
+      });
+    }
+
+    messageInput.value = '';
+    fileInput.value = '';
+    toggleSendButton();
+  }
+}
+
 
 
 function listenForMessages() {
@@ -121,4 +162,44 @@ function switchRoom() {
   const roomSelect = document.getElementById('room-select');
   currentRoom = roomSelect.value;
   listenForMessages();
+}
+
+
+
+
+function createRoom() {
+  const roomInput = document.getElementById('new-room-name');
+  const roomName = roomInput.value.trim();
+
+  if (roomName) {
+    // Store new room in Firebase under /rooms-list
+    db.ref('rooms-list/' + roomName).set(true).then(() => {
+      // Add to dropdown
+      const roomSelect = document.getElementById('room-select');
+      const option = document.createElement('option');
+      option.value = roomName;
+      option.textContent = roomName;
+      roomSelect.appendChild(option);
+
+      // Auto-select it & switch
+      roomSelect.value = roomName;
+      switchRoom();
+    });
+
+    roomInput.value = '';
+  } else {
+    alert('Please enter a valid room name.');
+  }
+}
+
+
+function signInWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider)
+    .then((result) => {
+      // Firebase handles everything, onAuthStateChanged will run
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
 }

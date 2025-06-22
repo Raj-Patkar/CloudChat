@@ -12,6 +12,7 @@
     <input id="email" placeholder="Email" />
     <input id="password" type="password" placeholder="Password" />
     <button onclick="login()">Login</button>
+    <button onclick="signInWithGoogle()">Sign in with Google</button>
     <button onclick="signup()">Signup</button>
   </div>
 
@@ -25,8 +26,14 @@
     <option value="tech">Tech</option>
   </select>
   <button onclick="switchRoom()">Switch Room</button>
+
+  <!-- ✅ New: input + create button -->
+<input id="new-room-name" placeholder="New room name" />
+<button onclick="createRoom()">Create Room</button>
+
       <div id="messages"></div>
       <input id="message-input" placeholder="Type a message..."  oninput="toggleSendButton()" />
+      <input type="file" id="image-input" accept="image/*">
       <button  id="send-btn" onclick="sendMessage()" disabled>Send</button>
       <button onclick="logout()">Logout</button>
     </div>
