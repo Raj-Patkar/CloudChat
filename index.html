@@ -15,12 +15,21 @@
     <button onclick="signup()">Signup</button>
   </div>
 
-  <div id="chat-section" style="display:none;">
-    <div id="messages"></div>
-    <input id="message-input" placeholder="Type a message..." />
-    <button onclick="sendMessage()">Send</button>
-    <button onclick="logout()">Logout</button>
-  </div>
+    <div id="chat-section" style="display:none;">
+      <h3 id="welcome-message"></h3> 
+       <!-- ✅ Add room selector -->
+  <label for="room-select">Select Room:</label>
+  <select id="room-select">
+    <option value="general">General</option>
+    <option value="sports">Sports</option>
+    <option value="tech">Tech</option>
+  </select>
+  <button onclick="switchRoom()">Switch Room</button>
+      <div id="messages"></div>
+      <input id="message-input" placeholder="Type a message..."  oninput="toggleSendButton()" />
+      <button  id="send-btn" onclick="sendMessage()" disabled>Send</button>
+      <button onclick="logout()">Logout</button>
+    </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
@@ -28,29 +37,6 @@
 
   <script src="firebase-config.js"></script>
   <script src="app.js"></script>
-  <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyCWqzLrrJvwVbbH57l4_oVS6TLLagJIsfA",
-    authDomain: "cloud-chat-545ee.firebaseapp.com",
-    databaseURL: "https://cloud-chat-545ee-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "cloud-chat-545ee",
-    storageBucket: "cloud-chat-545ee.firebasestorage.app",
-    messagingSenderId: "1001915197383",
-    appId: "1:1001915197383:web:be5ee98e53f7dfedafdbe2",
-    measurementId: "G-3K4LQ46PYM"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
 </body>
 </html>

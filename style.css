@@ -19,7 +19,7 @@ h1 {
 #chat-section {
   background: #fff;
   border-radius: 10px;
-  padding: 30px 25px;
+  padding: 30px 60px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
   width: 90%;
   max-width: 400px;
@@ -63,13 +63,7 @@ button:hover {
   margin-bottom: 10px;
 }
 
-#messages div {
-  margin-bottom: 10px;
-  background: #e2f0ff;
-  padding: 10px 15px;
-  border-radius: 20px;
-  max-width: 80%;
-}
+
 
 #message-input {
   width: calc(100% - 100px);
@@ -87,4 +81,103 @@ button:hover {
 #chat-section .logout-btn {
   width: 100%;
   margin-top: 15px;
+}
+
+/* Message container: flex row */
+.message {
+  display: flex;
+  margin: 5px 10px;
+  max-width: 80%;
+}
+
+/* Bubble: fits content naturally */
+.bubble {
+  border-radius: 18px;
+  padding: 8px 14px;
+  word-wrap: break-word;
+  display: inline-block;
+  background: #f1f0f0;
+  position: relative;
+}
+
+/* My message: right side, green bubble */
+.my-message {
+  justify-content: flex-end;
+}
+
+.my-message .bubble {
+  background: #dcf8c6; /* Light green bubble for my messages */
+}
+
+/* Others' message: left side, white bubble with border */
+.other-message {
+  justify-content: flex-start;
+}
+
+.other-message .bubble {
+  background: #ffffff; /* White bubble */
+  border: 1px solid #ddd;
+}
+
+/* Sender name: bold, smaller spacing */
+.msg-sender {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* Message text: natural spacing */
+.msg-text {
+  margin-bottom: 2px;
+}
+
+/* Timestamp: small, subtle, right-aligned inside bubble */
+.msg-time {
+  font-size: 0.7em;
+  color: #777;
+  display: block;
+  text-align: right;
+  margin-top: 2px;
+}
+
+
+/* Room selector and switch button container */
+#room-select,
+#chat-section button {
+  font-size: 1rem;
+}
+
+/* Room selector dropdown */
+#room-select {
+  padding: 10px;
+  margin: 10px 5px 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  appearance: none; /* removes default arrow style */
+  background: #fff;
+  cursor: pointer;
+}
+
+/* Switch Room button */
+#chat-section button {
+  background: #00b4db;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#chat-section button:hover {
+  background: #0083b0;
+}
+
+/* Optional: style label nicely */
+#chat-section label {
+  font-weight: bold;
+  margin-right: 5px;
+  color: #333;
 }
