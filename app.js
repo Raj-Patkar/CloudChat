@@ -41,14 +41,26 @@ function signInWithGoogle() {
 // ✅ Logout
 function logout() {
   if (messagesRef) {
-    messagesRef.off(); // stop old listeners
+    messagesRef.off();
   }
+
   auth.signOut().then(() => {
-    document.getElementById('login-section').style.display = 'block';
-    document.getElementById('chat-section').style.display = 'none';
-    document.getElementById('messages').innerHTML = '';
+    // Handle all page cases
+    const loginSection = document.getElementById('login-section');
+    const chatSection = document.getElementById('chat-section');
+    const appSection = document.getElementById('app-section');
+    const messagesDiv = document.getElementById('messages');
+
+    if (loginSection) loginSection.style.display = 'block';
+    if (chatSection) chatSection.style.display = 'none';
+    if (appSection) appSection.style.display = 'none';
+    if (messagesDiv) messagesDiv.innerHTML = '';
+
+    // Redirect user to index.html (home/login page)
+    window.location.href = "index.html";
   });
 }
+
 
 // ✅ Toggle Send Button
 function toggleSendButton() {
@@ -107,7 +119,7 @@ function sendMessage() {
     }
 
     db.ref(`rooms/${currentRoom}/messages`).push({
-      sender: user.uid, // ✅ Use UID, not email
+      sender: user.uid,
       text: message,
       timestamp: Date.now()
     });
@@ -121,6 +133,8 @@ function sendMessage() {
 // ✅ Listen for Messages — now with Profile Info
 function listenForMessages() {
   const messagesDiv = document.getElementById('messages');
+  if (!messagesDiv) return;
+
   messagesDiv.innerHTML = '';
 
   if (messagesRef) {
@@ -138,7 +152,6 @@ function listenForMessages() {
     const isOwn = msg.sender === currentUser.uid;
     msgEl.className = `message ${isOwn ? 'own' : 'other'}`;
 
-    // ✅ Lookup sender profile
     db.ref(`users/${msg.sender}`).once('value').then((userSnap) => {
       const userData = userSnap.val() || {};
       const name = userData.displayName || 'Anonymous';
@@ -165,15 +178,13 @@ function listenForMessages() {
   });
 }
 
-// ✅ Auth State
+// ✅ Auth State Handler — adaptive for index.html and chat.html
 auth.onAuthStateChanged((user) => {
   if (user) {
-    // ✅ Store Profile on first login
     const userRef = db.ref(`users/${user.uid}`);
     userRef.once('value').then((snapshot) => {
       if (!snapshot.exists()) {
         const displayName = user.displayName || prompt("Enter your name:");
-         // ✅ Use DiceBear with UID as seed
         const avatarURL = `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.uid}`;
         userRef.set({
           displayName: displayName,
@@ -182,12 +193,35 @@ auth.onAuthStateChanged((user) => {
       }
     });
 
-    document.getElementById('login-section').style.display = 'none';
-    document.getElementById('chat-section').style.display = 'block';
-    document.getElementById('welcome-message').textContent = `Welcome, ${user.email}`;
-    listenForMessages();
+    const path = window.location.pathname;
+
+    if (document.getElementById('login-section')) {
+      document.getElementById('login-section').style.display = 'none';
+    }
+
+    if (path.includes("chat.html")) {
+      // In Chat Page
+      if (document.getElementById('chat-section')) {
+        document.getElementById('chat-section').style.display = 'block';
+        document.getElementById('welcome-message').textContent = `Welcome, ${user.email}`;
+        listenForMessages();
+      }
+    } else if (document.getElementById('app-section')) {
+      // In Portal Menu (index.html)
+      document.getElementById('app-section').style.display = 'block';
+      document.getElementById('welcome-message').textContent = `Welcome, ${user.email}`;
+    }
+
   } else {
-    document.getElementById('login-section').style.display = 'block';
-    document.getElementById('chat-section').style.display = 'none';
+    // Not logged in
+    if (document.getElementById('login-section')) {
+      document.getElementById('login-section').style.display = 'block';
+    }
+    if (document.getElementById('chat-section')) {
+      document.getElementById('chat-section').style.display = 'none';
+    }
+    if (document.getElementById('app-section')) {
+      document.getElementById('app-section').style.display = 'none';
+    }
   }
 });

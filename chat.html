@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CloudChat</title>
+  <link rel="stylesheet" href="style.css" />
+  
+</head>
+<body>
+  <h1>💬 CloudChat 🚀</h1>
+  <h3 id="welcome-message"></h3>
+
+  <!-- ✅ Room selector & creation -->
+  <label for="room-select">Select Room:</label>
+  <select id="room-select">
+    <option value="general">General</option>
+    <option value="sports">Sports</option>
+    <option value="tech">Tech</option>
+  </select>
+  <button onclick="switchRoom()">Switch Room</button>
+  <br/>
+  <input id="new-room-name" placeholder="New room name" />
+  <button onclick="createRoom()">Create Room</button>
+
+  <div id="messages"></div>
+
+  <input type="file" id="image-input" accept="image/*" onchange="toggleSendButton()">
+  <input id="message-input" placeholder="Type a message..." oninput="toggleSendButton()" />
+
+  <button id="send-btn" onclick="sendMessage()" disabled>Send</button>
+  <button onclick="logout()">Logout</button>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
